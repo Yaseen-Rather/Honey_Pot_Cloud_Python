@@ -26,7 +26,7 @@ class HoneypotServer(paramiko.ServerInterface):
         self.thresholds = {}
 
 
-    def check_channel_request(self, king, chanid):
+    def check_channel_request(self, kind, chanid):
 
         if kind == "session":
             return paramiko.OPEN_SUCCEEDED

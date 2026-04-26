@@ -44,7 +44,7 @@ def create_database():
 def log_attempt(ip, username, password, accepted):
 
     with db_lock:
-        conn = sqlite3.connect("./Database/log_database")
+        conn = sqlite3.connect("./Database/Honeypot_logs.db")
         cursor = conn.cursor()
 
         cursor.execute("""
