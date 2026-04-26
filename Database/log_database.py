@@ -24,7 +24,7 @@ def create_database():
 
     cursor.execute("""
         
-        CREATE TABLE IF NOT EXISTS attemps (
+        CREATE TABLE IF NOT EXISTS attempts (
 
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp   TEXT,
@@ -48,9 +48,9 @@ def log_attempt(ip, username, password, accepted):
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO attemps (timestamp, ip, username, password, accepted)
+            INSERT INTO attempts (timestamp, ip, username, password, accepted)
             VALUES (?, ?, ?, ?, ?)
-        """, (datetime.datetime.now().isoformat(), ip, username, password, int(accepted)))
+        """, (datetime.now().isoformat(), ip, username, password, int(accepted)))
 
         conn.commit()
         conn.close()
