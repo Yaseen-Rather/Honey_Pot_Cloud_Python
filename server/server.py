@@ -13,7 +13,7 @@ import random
 
 from Database.log_database import log_attempt
 
-from Server.server import Decoy_ip, Decoy_port, Decoy_username, Decoy_password
+from Server.config import Decoy_ip, Decoy_port, Decoy_username, Decoy_password
 
 # Data Forwarding
 
@@ -28,13 +28,21 @@ def forward_data(source_channel, dest_channel, direction, attacker_ip):
 
             if direction == "attacker_to_decoy":
 
-                logging.info(f"Command from {attacker_ip}: {data.decode('utf-8', errors='ignore').strip()}")
+                decoded = data.decode('urf-8', errors='ignore')
+                command = command_buffer.strip()
+
+                if '\r' in decoded or '\n' in decoded:
+                    command = command_buffer.strip()
+                    
+                    if command:
+                        logging.info(f"command from {attacker_ip}: {command}")
+                    
+                    command_buffer = ""
 
             dest_channel.send(data)
 
     except Exception:
         pass
-
 
 
 # SSH Server Interface
