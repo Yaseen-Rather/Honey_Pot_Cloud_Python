@@ -21,6 +21,8 @@ from Server.config import Decoy_ip, Decoy_port, Decoy_username, Decoy_password
 
 def forward_data(source_channel, dest_channel, direction, attacker_ip):
     
+    command_buffer = ""
+
     try:
         while True:
             data = source_channel.recv(1024)
@@ -30,10 +32,16 @@ def forward_data(source_channel, dest_channel, direction, attacker_ip):
 
             if direction == "attacker_to_decoy":
 
-                decoded = data.decode('urf-8', errors='ignore').strip()
-                
-                if decoded:
-                    logging.info(f"Command from {attacker_ip}: {decoded}")
+                decoded = data.decode('utf-8', errors='ignore')
+                command_buffer += decoded
+
+                if '\r' in decoded or '\n' in decoded:
+                    command = command_buffer.strip()
+
+                    if command:
+                        logging.info(f"Command from {attacker_ip}: {command}")
+
+                    command_buffer = ""
 
             dest_channel.send(data)
 
@@ -108,11 +116,7 @@ def connect_to_decoy():
             password=Decoy_password
         )
 
-        decoy_channel = ssh_client.invoke_shell(
-            term='xterm',
-            width=80,
-            height=24
-        )
+        decoy_channel = ssh_client.invoke_shell()
         time.sleep(0.5)
         logging.info(f"Connected to decoy vm at {Decoy_ip}")
         return ssh_client, decoy_channel
